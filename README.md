@@ -90,6 +90,37 @@ Webhooks are triggered on push events and include the following headers:
 
 Payload includes repository name, ref, commits, and pusher information.
 
+## Jenkins Integration
+
+A Docker Compose setup is included for running Jenkins with webhook support.
+
+### Starting Jenkins
+
+```bash
+docker compose up -d --build
+```
+
+Jenkins will be available at http://localhost:8080 with default credentials `admin` / `admin`.
+
+### Configuring a Webhook-Triggered Job
+
+1. Create a new Pipeline job in Jenkins
+2. Under **Build Triggers**, check **Generic Webhook Trigger**
+3. Set a token (e.g., `my-token`)
+4. Save the job
+
+### Connecting GutHib to Jenkins
+
+Add a webhook to your repository with the token in the URL:
+
+```bash
+curl -X POST http://localhost:3000/api/repos/my-repo.git/webhooks \
+  -H "Content-Type: application/json" \
+  -d '{"url": "http://localhost:8080/generic-webhook-trigger/invoke?token=my-token"}'
+```
+
+Now every push to the repository will trigger the Jenkins job.
+
 ## License
 
 MIT
