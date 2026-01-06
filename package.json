@@ -1,5 +1,5 @@
 {
-  "name": "legit",
+  "name": "guthib",
   "version": "1.0.0",
   "description": "Simple self-hosted Git server",
   "main": "server.js",

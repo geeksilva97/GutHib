@@ -1,4 +1,4 @@
-# Legit
+# GutHib
 
 A lightweight, self-hosted Git server written in Node.js with zero external dependencies.
 
@@ -19,7 +19,7 @@ A lightweight, self-hosted Git server written in Node.js with zero external depe
 
 ```bash
 git clone <repo-url>
-cd legit
+cd guthib
 npm start
 ```
 
@@ -84,9 +84,9 @@ curl -X POST http://localhost:3000/api/repos \
 
 Webhooks are triggered on push events and include the following headers:
 
-- `X-Legit-Event` - Event type (e.g., `push`)
-- `X-Legit-Delivery` - Unique delivery ID
-- `X-Legit-Signature` - HMAC-SHA256 signature (if secret is configured)
+- `X-GutHib-Event` - Event type (e.g., `push`)
+- `X-GutHib-Delivery` - Unique delivery ID
+- `X-GutHib-Signature` - HMAC-SHA256 signature (if secret is configured)
 
 Payload includes repository name, ref, commits, and pusher information.
 

@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 const REPOS_DIR = process.env.REPOS_DIR || './repos';
 
 // Initialize SQLite database
-const db = new DatabaseSync('./legit.db');
+const db = new DatabaseSync('./guthib.db');
 db.exec(`
   CREATE TABLE IF NOT EXISTS repositories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -240,15 +240,15 @@ async function triggerWebhooks(repoName, event, payload) {
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': Buffer.byteLength(body),
-          'X-Legit-Event': event,
-          'X-Legit-Delivery': Date.now().toString()
+          'X-GutHib-Event': event,
+          'X-GutHib-Delivery': Date.now().toString()
         }
       };
 
       if (webhook.secret) {
         const { createHmac } = await import('node:crypto');
         const signature = createHmac('sha256', webhook.secret).update(body).digest('hex');
-        options.headers['X-Legit-Signature'] = `sha256=${signature}`;
+        options.headers['X-GutHib-Signature'] = `sha256=${signature}`;
       }
 
       const proto = url.protocol === 'https:' ? await import('node:https') : await import('node:http');
@@ -470,7 +470,7 @@ async function renderRepoPage(repoName) {
   return `<!DOCTYPE html>
 <html>
 <head>
-  <title>${repoName} - Legit</title>
+  <title>${repoName} - GutHib</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 50px auto; padding: 20px; }
     h1 { color: #333; }
@@ -609,7 +609,7 @@ function renderHomePage() {
   return `<!DOCTYPE html>
 <html>
 <head>
-  <title>Legit - Simple Git Server</title>
+  <title>GutHib - Simple Git Server</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 50px auto; padding: 20px; }
     h1 { color: #333; }
@@ -626,7 +626,7 @@ function renderHomePage() {
   </style>
 </head>
 <body>
-  <h1>Legit - Simple Git Server</h1>
+  <h1>GutHib - Simple Git Server</h1>
 
   <h2>Create Repository</h2>
   <form method="POST" action="/api/repos">
@@ -732,7 +732,7 @@ async function renderCommitPage(repoName, hash) {
     return `<!DOCTYPE html>
 <html>
 <head>
-  <title>${commit.shortHash} - ${repoName} - Legit</title>
+  <title>${commit.shortHash} - ${repoName} - GutHib</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1100px; margin: 50px auto; padding: 20px; background: #fafafa; }
     h1 { color: #333; font-size: 20px; margin-bottom: 5px; }
@@ -857,7 +857,7 @@ async function renderTreePage(repoName, ref) {
     return `<!DOCTYPE html>
 <html>
 <head>
-  <title>Files at ${ref.substring(0, 7)} - ${repoName} - Legit</title>
+  <title>Files at ${ref.substring(0, 7)} - ${repoName} - GutHib</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 900px; margin: 50px auto; padding: 20px; background: #fafafa; }
     h1 { color: #333; font-size: 18px; }
@@ -912,7 +912,7 @@ async function renderBlobPage(repoName, ref, filePath) {
     return `<!DOCTYPE html>
 <html>
 <head>
-  <title>${filePath} - ${repoName} - Legit</title>
+  <title>${filePath} - ${repoName} - GutHib</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1100px; margin: 50px auto; padding: 20px; background: #fafafa; }
     h1 { color: #333; font-size: 16px; font-weight: normal; }
@@ -965,7 +965,7 @@ async function renderComparePage(repoName, base, head) {
     return `<!DOCTYPE html>
 <html>
 <head>
-  <title>Comparing ${base.substring(0, 7)}...${head.substring(0, 7)} - ${repoName} - Legit</title>
+  <title>Comparing ${base.substring(0, 7)}...${head.substring(0, 7)} - ${repoName} - GutHib</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1100px; margin: 50px auto; padding: 20px; background: #fafafa; }
     h1 { color: #333; font-size: 18px; }
@@ -1236,6 +1236,6 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Legit Git server running at http://localhost:${PORT}`);
+  console.log(`GutHib Git server running at http://localhost:${PORT}`);
   console.log(`Repositories stored in: ${path.resolve(REPOS_DIR)}`);
 });
