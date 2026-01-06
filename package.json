@@ -1,0 +1,13 @@
+{
+  "name": "legit",
+  "version": "1.0.0",
+  "description": "Simple self-hosted Git server",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
