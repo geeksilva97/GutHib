@@ -589,7 +589,23 @@ async function renderRepoPage(repoName) {
       await fetch('/api/repos/${repoName}/webhooks/' + id, { method: 'DELETE' });
       location.reload();
     }
+
+    async function deleteRepository() {
+      if (!confirm('Are you sure you want to delete this repository? This action cannot be undone.')) return;
+      const res = await fetch('/api/repos/${repoName}', { method: 'DELETE' });
+      if (res.ok) {
+        window.location.href = '/';
+      } else {
+        alert('Failed to delete repository');
+      }
+    }
   </script>
+
+  <h2 style="color: #c00; margin-top: 40px;">Danger Zone</h2>
+  <div style="border: 1px solid #c00; border-radius: 4px; padding: 15px;">
+    <p style="margin: 0 0 10px 0;">Once you delete a repository, there is no going back.</p>
+    <button onclick="deleteRepository()" style="background: #c00; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Delete Repository</button>
+  </div>
 </body>
 </html>`;
 }
@@ -1089,15 +1105,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    if (req.url.startsWith('/api/repos/') && req.method === 'DELETE') {
-      const repoName = req.url.replace('/api/repos/', '');
-      const result = deleteRepository(repoName);
-      res.writeHead(result.error ? 404 : 200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(result));
-      return;
-    }
-
-    // Webhook API routes
+    // Webhook API routes (must be before repo DELETE route)
     const webhookMatch = req.url.match(/^\/api\/repos\/([^/]+\.git)\/webhooks(\/(\d+))?$/);
     if (webhookMatch) {
       const repoName = webhookMatch[1];
@@ -1145,6 +1153,15 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ success: true }));
         return;
       }
+    }
+
+    // DELETE /api/repos/:repo - delete repository
+    if (req.url.startsWith('/api/repos/') && req.method === 'DELETE') {
+      const repoName = req.url.replace('/api/repos/', '');
+      const result = deleteRepository(repoName);
+      res.writeHead(result.error ? 404 : 200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(result));
+      return;
     }
 
     // Git protocol routes
